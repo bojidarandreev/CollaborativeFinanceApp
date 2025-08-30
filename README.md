@@ -1,64 +1,69 @@
-# 💰 Collaborative Finance App
+# React + TypeScript + Vite
 
-A full-stack finance app built with React + Supabase + Groq AI.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## 🚀 Features
-- User auth (Supabase)
-- Manual / CSV / OCR transactions
-- Categories & budgets
-- Groups & shared accounts
-- Private receipts storage
-- AI Budget Advisor (Groq `gemma-2-9b-instruct`)
+Currently, two official plugins are available:
 
----
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## 🔧 Setup
+## Expanding the ESLint configuration
 
-### 1. Clone & install
-```bash
-git clone <repo_url>
-cd finance-app
-pnpm install
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-### 2. Configure environment
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-Copy .env.example → .env.local and set:
-SUPABASE_URL="..."
-SUPABASE_ANON_KEY="..."
-SUPABASE_SERVICE_ROLE_KEY="..."
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
 
-GROQUE_API_KEY="..."
-GROQUE_MODEL="gemma-2-9b-instruct"
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
 
-AI_ADVISOR_PROMPT="(provided system prompt)"
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-### 3. Database & Storage
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-Supabase migrations auto-run on deploy.
-Storage bucket receipts + RLS policies already applied.
-
-### 4. Run locally
-pnpm dev
-
-### 5. Deploy
-
-Frontend: Vercel/Netlify
-Backend: Supabase Edge Functions (auto-deployed)
-
-### 5. Deploy
-
-Frontend: Vercel/Netlify
-Backend: Supabase Edge Functions (auto-deployed)
-
-🧪 Tests
-
-Tests are included and run in the AI Agent’s VM before delivery.
-You can re-run:
-pnpm test
-
-### Sample Data
-
-Located in /tests/data/:
-receipts/ → example images for OCR.
-csv/ → bank statements for CSV import.
-seed/ → optional JSON/SQL seed transactions.
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
